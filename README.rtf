@@ -1,0 +1,27 @@
+﻿1. Introduction
+Welcome to the sources folder. Everything contained within this folder is part of the source code for this project. I wrote a “1-click” compile script called compile.sh. It works with bash, so if you're using Windows, I hope you have cygwin or a Linux VM.
+
+This application has 3 primarily different runnable executable. Each one represents a different parallel structure covered through the semester.
+
+This application is meant to simulate scheduling on a dual-core computer. It has a list of process and each “processes” and each “process” has an integer value that represents the time requirement needed to run the “process”. The program first sorts the times from smallest to greatest and then goes through every possible permutation of the “process” arrangement in order to find out which arrangement gives both cores a relatively even distribution of the run time load.
+
+2. Main File Breakdown
+
+* sequential.cpp
+This is where you'll expect to find the sequential implementation of the program. The code should be fairly straightforward
+
+* mpi.cpp
+This is where you'll expect to find the MPI implementation of the program. The special thing about this implementation is that it takes the total number of permutations (n!), divides that number by the number of MPI processes, and distributes the calculations across the MPI processes. This implementation uses factoradic definitions to distribute the amount of permutations that are processed in the program across the various MPI processes. The root MPI process (MPI process 0) handles the initial variable setup and handling the results at the end.
+
+*omp.cpp
+This implementation is similar to the MPI implementation, however OpenMP uses threads instead of processes. Due to the use of threads in OpenMP I had to structure the code differently than in the MPI implementation. You'll notice that a lot of the code is done in sequential sections and there is only one parallel block. This implementation relies on parallel_common like the MPI version. It uses a factoradic definition to distribute the amount of permutations across the threads.
+
+*Compile.sh
+This is my one-click solution to compiling all the applications at one time. I tried to make it as easy as possible. To compile all of the applications, you just need to run the shell script compile.sh. Make sure you're running on a UNIX environment with the latest GNU C++ compiler and Open MPI.
+
+3. Other Files
+*Permutations.cpp
+This is a test program that determines if the factorial of the number of tasks is equal to a counter that then runs through each permutation and counts them up. Turns out they are! (surprise surprise)
+
+*parallel_common.cpp
+This is a helper class for the parallel applications. It has 2 functions: factorial(int) and nthpermutation(int, int*, size_t). factorial(int) does exactly what it sounds. It gets returns the factorial of the number specified in the parameter. Nthpermutation gets a specified permutation of a specified array at a specified size.
